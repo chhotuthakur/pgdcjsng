@@ -54,7 +54,7 @@
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwEc7bpyTisrFQR9CTtQAuLtl7SBtahHbbE_mCtW5nKvFKqBoCnUhbPavwKI7eR50NP/exec"; // Replace with doGet URL
+    const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL"; // replace with /exec link
 
     fetch(scriptURL)
       .then(res => res.json())
@@ -65,13 +65,10 @@
         data.forEach(row => {
           let tr = document.createElement("tr");
           tr.innerHTML = `
-           <tr>
-  <td>${row.Timestamp}</td>
-  <td>${row.Employee_Name}</td>
-  <td>${row.IVRS}</td>
-  <td>${row.Amount}</td>
-</tr>
-
+            <td>${new Date(row["Timestamp"]).toLocaleString()}</td>
+            <td>${row["Employee Name"]}</td>
+            <td>${row["IVRS "]}</td>
+            <td>${row["Amount"]}</td>
           `;
           tbody.appendChild(tr);
         });
