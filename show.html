@@ -4,75 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Collection Data</title>
+
+  <!-- AdminLTE + Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      padding: 30px;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
-    }
-    th {
-      background: #007bff;
-      color: #fff;
-    }
-    tr:nth-child(even) {
-      background: #f9f9f9;
-    }
+    body { background: #f4f6f9; }
+    .container { margin-top: 40px; }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h2>Collection Data</h2>
-    <table id="dataTable">
-      <thead>
-        <tr>
-          <th>Timestamp</th>
-          <th>Employee</th>
-          <th>IVRS</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+<body class="hold-transition sidebar-mini">
+
+<div class="container">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h3 class="card-title">Collection Data</h3>
+    </div>
+    <div class="card-body">
+      <table id="dataTable" class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Employee</th>
+            <th>IVRS</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
+</div>
 
-  <script>const scriptURL = "https://script.google.com/macros/s/AKfycbwEc7bpyTisrFQR9CTtQAuLtl7SBtahHbbE_mCtW5nKvFKqBoCnUhbPavwKI7eR50NP/exec"; // replace with /exec link
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE -->
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-    fetch(scriptURL)
-      .then(res => res.json())
-      .then(data => {
-        let tbody = document.querySelector("#dataTable tbody");
-        tbody.innerHTML = "";
+<script>
+  const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEBAPP_URL"; // Replace with your deployed /exec URL
 
-        data.forEach(row => {
-          let tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${new Date(row["Timestamp"]).toLocaleString()}</td>
-            <td>${row["Employee Name"]}</td>
-            <td>${row["IVRS "]}</td>
-            <td>${row["Amount"]}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      })
-      .catch(err => console.error("Error loading data:", err));
-  </script>
+  fetch(scriptURL)
+    .then(res => res.json())
+    .then(data => {
+      let tableData = data.map(row => [
+        new Date(row["Timestamp"]).toLocaleString(),
+        row["Employee Name"],
+        row["IVRS "],
+        row["Amount"]
+      ]);
+
+      $('#dataTable').DataTable({
+        data: tableData,
+        columns: [
+          { title: "Timestamp" },
+          { title: "Employee" },
+          { title: "IVRS" },
+          { title: "Amount" }
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+      });
+    })
+    .catch(err => console.error("Error loading data:", err));
+</script>
+
 </body>
 </html>
