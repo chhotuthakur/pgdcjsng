@@ -82,21 +82,34 @@
 
     $("#msg").html("<span class='text-info'>Submitting...</span>");
 
-    fetch(scriptURL, {
-      method: "POST",
-      body: formData
-    })
-    .then(res => res.json())
-    .then(res => {
-      $("#msg").html("<span class='text-success'>✅ Data saved successfully!</span>");
-      $("#dataForm")[0].reset();
-    })
-    .catch(err => {
-      console.error("Error:", err);
-      $("#msg").html("<span class='text-danger'>❌ Error submitting data</span>");
-    });
-  });
+   fetch(scriptURL, {
+  method: "POST",
+  body: formData
+})
+.then(res => res.text())  // <-- take text
+.then(txt => {
+  console.log("Response:", txt);
+  let res;
+  try {
+    res = JSON.parse(txt);   // try JSON
+  } catch {
+    res = { status: "raw", data: txt };
+  }
+
+  if (res.status === "success") {
+    $("#msg").html("<span class='text-success'>✅ Data saved successfully!</span>");
+    $("#dataForm")[0].reset();
+  } else {
+    $("#msg").html("<span class='text-warning'>⚠ Unexpected response: " + txt + "</span>");
+  }
+})
+.catch(err => {
+  console.error("Error:", err);
+  $("#msg").html("<span class='text-danger'>❌ Error submitting data</span>");
+});
+
 </script>
 
 </body>
 </html>
+
