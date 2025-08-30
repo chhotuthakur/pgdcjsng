@@ -65,10 +65,13 @@
         data.forEach(row => {
           let tr = document.createElement("tr");
           tr.innerHTML = `
-            <td>${row.Timestamp}</td>
-            <td>${row.Employee}</td>
-            <td>${row.IVRS}</td>
-            <td>${row.Amount}</td>
+           <tr>
+  <td>${row.Timestamp}</td>
+  <td>${row.Employee_Name}</td>
+  <td>${row.IVRS}</td>
+  <td>${row.Amount}</td>
+</tr>
+
           `;
           tbody.appendChild(tr);
         });
