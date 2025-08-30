@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection Data</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 30px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #007bff;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Collection Data</h2>
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Employee</th>
+          <th>IVRS</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwEc7bpyTisrFQR9CTtQAuLtl7SBtahHbbE_mCtW5nKvFKqBoCnUhbPavwKI7eR50NP/exec"; // Replace with doGet URL
+
+    fetch(scriptURL)
+      .then(res => res.json())
+      .then(data => {
+        let tbody = document.querySelector("#dataTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach(row => {
+          let tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.Timestamp}</td>
+            <td>${row.Employee}</td>
+            <td>${row.IVRS}</td>
+            <td>${row.Amount}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error("Error loading data:", err));
+  </script>
+</body>
+</html>
