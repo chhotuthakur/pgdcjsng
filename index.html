@@ -1,131 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Entry | AdminLTE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Collection Entry | AdminLTE (No-CORS)</title>
 
-  <!-- AdminLTE -->
+  <!-- AdminLTE & Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
-
+<body class="hold-transition layout-top-nav">
 <div class="wrapper">
-
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="index.html" class="nav-link">Home</a>
-      </li>
-    </ul>
+  <nav class="main-header navbar navbar-expand navbar-dark navbar-primary">
+    <span class="navbar-brand">Collection Entry</span>
   </nav>
-
-  <!-- Sidebar -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="#" class="brand-link">
-      <span class="brand-text font-weight-light">My Dashboard</span>
-    </a>
-    <div class="sidebar">
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-          <li class="nav-item">
-            <a href="input.html" class="nav-link active">
-              <i class="nav-icon fas fa-edit"></i>
-              <p>Data Entry</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="show.html" class="nav-link">
-              <i class="nav-icon fas fa-table"></i>
-              <p>Show Data</p>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </aside>
 
   <!-- Content -->
   <div class="content-wrapper">
-    <section class="content-header">
-      <div class="container-fluid">
-        <h1>Data Entry Form</h1>
-      </div>
-    </section>
+    <div class="content">
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Submit Collection</h3>
+              </div>
 
-    <section class="content">
-      <div class="container-fluid">
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">Enter Collection Data</h3>
+              <!-- HIDDEN IFRAME (bypasses CORS) -->
+              <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+              <!-- Form posts directly to Apps Script (no AJAX) -->
+              <form id="entryForm"
+                    class="p-0 m-0"
+                    action="https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec"
+                    method="POST"
+                    target="hidden_iframe">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>Employee Name</label>
+                    <!-- IMPORTANT: name attributes must match what your GAS expects -->
+                    <input type="text" name="Employee Name" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label>IVRS</label>
+                    <input type="text" name="IVRS" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" name="Amount" class="form-control" required>
+                  </div>
+                  <div id="response" class="mt-2"></div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </form>
+
+            </div><!-- /.card -->
           </div>
-          <form id="dataForm">
-            <div class="card-body">
-              <div class="form-group">
-                <label for="employee">Employee Name</label>
-                <input type="text" class="form-control" id="employee" name="employee" placeholder="Enter employee name" required>
-              </div>
-              <div class="form-group">
-                <label for="ivrs">IVRS</label>
-                <input type="number" class="form-control" id="ivrs" name="ivrs" placeholder="Enter IVRS number" required>
-              </div>
-              <div class="form-group">
-                <label for="amount">Amount (₹)</label>
-                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" required>
-              </div>
-            </div>
-            <div class="card-footer">
-              <button type="submit" class="btn btn-primary">Submit</button>
-              <span id="msg" class="ml-3"></span>
-            </div>
-          </form>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </div>
 
-<!-- Scripts -->
+<!-- jQuery (for small UX handling only; no AJAX used) -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec";
+  // Show "Submitting..." immediately on submit
+  let submitting = false;
+  $("#entryForm").on("submit", function () {
+    submitting = true;
+    $("#response").html('<div class="alert alert-info mb-0">Submitting…</div>');
+  });
 
-  $("#dataForm").on("submit", function(e) {
-    e.preventDefault();
-
-    const formData = {
-      "Employee Name": $("#employee").val(),
-      "IVRS": $("#ivrs").val(),
-      "Amount": $("#amount").val()
-    };
-
-    $("#msg").html("<span class='text-info'>Submitting...</span>");
-
-    fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: { "Content-Type": "application/json" }
-    })
-    .then(res => res.json())
-    .then(res => {
-      $("#msg").html("<span class='text-success'>Data saved successfully!</span>");
-      $("#dataForm")[0].reset();
-    })
-    .catch(err => {
-      console.error("Error:", err);
-      $("#msg").html("<span class='text-danger'>Error submitting data</span>");
-    });
+  // When iframe loads after POST completes, show success + reset
+  document.getElementById("hidden_iframe").addEventListener("load", function () {
+    if (!submitting) return; // ignore initial page load
+    submitting = false;
+    $("#response").html('<div class="alert alert-success mb-0">✅ Submitted Successfully!</div>');
+    $("#entryForm")[0].reset();
   });
 </script>
-
 </body>
 </html>
