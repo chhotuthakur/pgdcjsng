@@ -3,64 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Collection</title>
-
+  <title>Collection Entry</title>
   <!-- AdminLTE & Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
-
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <style>
-    body {
-      background: #f4f6f9;
-    }
-    .card {
-      margin-top: 50px;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 </head>
 <body class="hold-transition layout-top-nav">
 <div class="wrapper">
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
-    <div class="container">
-      <a href="#" class="navbar-brand">
-        <span class="brand-text font-weight-bold">Collection Portal</span>
-      </a>
-    </div>
+  <nav class="main-header navbar navbar-expand navbar-dark navbar-primary">
+    <span class="navbar-brand">Collection Entry</span>
   </nav>
 
-  <!-- Main content -->
-  <div class="content">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Enter Collection Data</h3>
-            </div>
-            <form id="dataForm">
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="employee">Employee Name</label>
-                  <input type="text" class="form-control" id="employee" required>
-                </div>
-                <div class="form-group">
-                  <label for="ivrs">IVRS</label>
-                  <input type="text" class="form-control" id="ivrs" required>
-                </div>
-                <div class="form-group">
-                  <label for="amount">Amount</label>
-                  <input type="number" class="form-control" id="amount" required>
-                </div>
-                <div id="msg" class="mt-2"></div>
+  <!-- Content -->
+  <div class="content-wrapper">
+    <div class="content">
+      <div class="container mt-5">
+        <div class="card card-primary">
+          <div class="card-header"><h3 class="card-title">Submit Collection</h3></div>
+          <div class="card-body">
+            <form id="entryForm">
+              <div class="form-group">
+                <label>Employee Name</label>
+                <input type="text" name="Employee Name" class="form-control" required>
               </div>
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit</button>
+              <div class="form-group">
+                <label>IVRS</label>
+                <input type="text" name="IVRS" class="form-control" required>
               </div>
+              <div class="form-group">
+                <label>Amount</label>
+                <input type="number" name="Amount" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+            <div id="response" class="mt-3"></div>
           </div>
         </div>
       </div>
@@ -68,48 +45,27 @@
   </div>
 </div>
 
-<!-- Script -->
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec";
 
-  $("#dataForm").on("submit", function(e) {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("Employee Name", $("#employee").val());
-    formData.append("IVRS", $("#ivrs").val());
-    formData.append("Amount", $("#amount").val());
-
-    $("#msg").html("<span class='text-info'>Submitting...</span>");
-
-   fetch(scriptURL, {
-  method: "POST",
-  body: formData
-})
-.then(res => res.text())  // <-- take text
-.then(txt => {
-  console.log("Response:", txt);
-  let res;
-  try {
-    res = JSON.parse(txt);   // try JSON
-  } catch {
-    res = { status: "raw", data: txt };
-  }
-
-  if (res.status === "success") {
-    $("#msg").html("<span class='text-success'>✅ Data saved successfully!</span>");
-    $("#dataForm")[0].reset();
-  } else {
-    $("#msg").html("<span class='text-warning'>⚠ Unexpected response: " + txt + "</span>");
-  }
-})
-.catch(err => {
-  console.error("Error:", err);
-  $("#msg").html("<span class='text-danger'>❌ Error submitting data</span>");
+$("#entryForm").on("submit", function(e) {
+  e.preventDefault();
+  let formData = $(this).serialize();
+  $.ajax({
+    url: SCRIPT_URL,
+    type: "POST",
+    data: formData,
+    success: function(response) {
+      $("#response").html(`<div class="alert alert-success">✅ Submitted Successfully!</div>`);
+      $("#entryForm")[0].reset();
+    },
+    error: function(xhr, status, error) {
+      $("#response").html(`<div class="alert alert-danger">❌ Error: ${error}</div>`);
+    }
+  });
 });
-
 </script>
-
 </body>
 </html>
-
