@@ -45,7 +45,7 @@
   </div>
 </div>
 
-<!-- Scripts -->
+<!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec";
@@ -58,14 +58,15 @@ $("#entryForm").on("submit", function(e) {
     type: "POST",
     data: formData,
     success: function(response) {
-      $("#response").html(`<div class="alert alert-success">✅ Submitted Successfully!</div>`);
+      $("#response").html('<div class="alert alert-success">✅ Submitted Successfully!</div>');
       $("#entryForm")[0].reset();
     },
     error: function(xhr, status, error) {
-      $("#response").html(`<div class="alert alert-danger">❌ Error: ${error}</div>`);
+      $("#response").html('<div class="alert alert-danger">❌ Error: ' + error + '</div>');
     }
   });
 });
 </script>
 </body>
 </html>
+
