@@ -2,59 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Employee Collection Form</title>
+  <title>Collection Entry</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- AdminLTE + Bootstrap -->
+
+  <!-- AdminLTE & Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap4.min.css">
+
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition sidebar-mini">
 
-<div class="login-box" style="width: 500px;">
-  <div class="card card-primary">
-    <div class="card-header text-center">
-      <h3 class="card-title">Employee Collection Form</h3>
+<div class="wrapper">
+  <!-- Content Wrapper -->
+  <div class="content-wrapper p-4">
+
+    <!-- Form Card -->
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Submit Collection</h3>
+      </div>
+      <div class="card-body">
+        <form id="dataForm">
+          <div class="form-group">
+            <label for="employee">Employee Name</label>
+            <input type="text" id="employee" name="Employee Name" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label for="ivrs">IVRS</label>
+            <input type="text" id="ivrs" name="IVRS" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" name="Amount" class="form-control" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div id="msg" class="mt-2"></div>
+      </div>
     </div>
-    <div class="card-body">
-      <!-- DIRECT FORM SUBMISSION (NO CORS ISSUE) -->
-      <form method="POST" action="https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec" target="hidden_iframe" onsubmit="submitted=true;">
-        
-        <div class="form-group">
-          <label for="employee">Employee Name</label>
-          <input type="text" id="employee" name="Employee Name" class="form-control" required>
-        </div>
 
-        <div class="form-group">
-          <label for="ivrs">IVRS</label>
-          <input type="text" id="ivrs" name="IVRS" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-          <label for="amount">Amount</label>
-          <input type="number" id="amount" name="Amount" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block">Submit</button>
-      </form>
-      <iframe name="hidden_iframe" style="display:none;"></iframe>
+    <!-- Table Card -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h3 class="card-title">Collection Records</h3>
+      </div>
+      <div class="card-body">
+        <table id="dataTable" class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Employee Name</th>
+            <th>IVRS</th>
+            <th>Amount</th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
+
   </div>
 </div>
 
-<!-- AdminLTE Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
+<!-- DataTables -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
 <script>
-  let submitted = false;
-  window.addEventListener("message", () => {
-    if (submitted) {
-      alert("✅ Data submitted successfully!");
-      document.querySelector("form").reset();
-      submitted = false;
-    }
+  // Your Apps Script Web App URL (update this!)
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwLECRT-HGwIysoguz1ZvasOKkMHMDeyekA6GxFZl5TIMGyt6X0yCsddojBM1ywmtia/exec";
+
+  // Handle form submit
+  $("#dataForm").submit(function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: scriptURL,
+      method: "POST",
+      data: $(this).serialize(),
+      success: function() {
+        $("#msg").html('<div class="alert alert-success">Data submitted successfully!</div>');
+        $("#dataForm")[0].reset();
+        loadData();
+      },
+      error: function() {
+        $("#msg").html('<div class="alert alert-danger">Error submitting data.</div>');
+      }
+    });
   });
+
+  // Load table data
+  function loadData() {
+    $.getJSON(scriptURL, function(data) {
+      let rows = "";
+      data.forEach(row => {
+        rows += `
+          <tr>
+            <td>${row.Timestamp}</td>
+            <td>${row["Employee Name"]}</td>
+            <td>${row["IVRS"]}</td>
+            <td>${row.Amount}</td>
+          </tr>
+        `;
+      });
+      $("#dataTable tbody").html(rows);
+      $("#dataTable").DataTable({
+        destroy: true,
+        responsive: true,
+        dom: 'Bfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+      });
+    });
+  }
+
+  $(document).ready(loadData);
 </script>
 
 </body>
