@@ -86,7 +86,7 @@
       });
 
       let summaryData = Object.keys(summary).map(name => ({
-        "Employee Name": `<a href="user.html?name=${encodeURIComponent(name)}">${name}</a>`,
+        "Employee Name": `<a href="details.html?name=${encodeURIComponent(name)}">${name}</a>`,
         "Total Entries": summary[name].count,
         "Total Amount": summary[name].total
       }));
