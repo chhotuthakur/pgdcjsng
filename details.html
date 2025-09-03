@@ -46,6 +46,9 @@
   const GET_URL = "https://script.google.com/macros/s/AKfycbwEc7bpyTisrFQR9CTtQAuLtl7SBtahHbbE_mCtW5nKvFKqBoCnUhbPavwKI7eR50NP/exec";
 
   $(document).ready(function() {
+
+  console.log(data[0]); // 👈 check first row in browser console
+
     const params = new URLSearchParams(window.location.search);
     const name = params.get("name");
     $("#title").text("Entries by " + name);
