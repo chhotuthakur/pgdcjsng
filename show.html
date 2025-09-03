@@ -60,6 +60,8 @@
 
   $(document).ready(function() {
     $.getJSON(GET_URL, function(data) {
+  console.log(data[0]); // 👈 check first row in browser console
+
       // DataTable for all entries
       $('#dataTable').DataTable({
         data: data,
