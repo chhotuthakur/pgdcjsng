@@ -2,137 +2,119 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Collection Data | AdminLTE</title>
-
-  <!-- AdminLTE -->
+  <title>Data List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- AdminLTE + Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
   <!-- DataTables -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini">
 
 <div class="wrapper">
-
-  <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-      </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="index.html" class="nav-link">Home</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="list.html" class="nav-link">Data List</a>
       </li>
     </ul>
   </nav>
 
-  <!-- Sidebar -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="#" class="brand-link">
-      <span class="brand-text font-weight-light">My Dashboard</span>
-    </a>
-    <div class="sidebar">
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
-          <li class="nav-item">
-            <a href="show.html" class="nav-link active">
-              <i class="nav-icon fas fa-table"></i>
-              <p>Collection Data</p>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </aside>
-
-  <!-- Content -->
-  <div class="content-wrapper">
-    <section class="content-header">
-      <div class="container-fluid">
-        <h1>Collection Data</h1>
-      </div>
-    </section>
-
+  <div class="content-wrapper p-4">
     <section class="content">
       <div class="container-fluid">
-        <div class="card">
-          <div class="card-body">
-            <table id="dataTable" class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Employee</th>
-                  <th>IVRS</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-              <tfoot>
-                <tr>
-                  <th colspan="3" style="text-align:right">Total:</th>
-                  <th id="totalAmount"></th>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
+        <h3>All Entries</h3>
+        <table id="dataTable" class="display nowrap" style="width:100%">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Employee Name</th>
+              <th>IVRS</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+        </table>
+
+        <hr>
+        <h3>User Summary</h3>
+        <table id="summaryTable" class="display nowrap" style="width:100%">
+          <thead>
+            <tr>
+              <th>Employee Name</th>
+              <th>Total Entries</th>
+              <th>Total Amount</th>
+            </tr>
+          </thead>
+        </table>
       </div>
     </section>
   </div>
-
 </div>
 
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwEc7bpyTisrFQR9CTtQAuLtl7SBtahHbbE_mCtW5nKvFKqBoCnUhbPavwKI7eR50NP/exec";
+  const GET_URL = "https://script.google.com/macros/s/AKfycbwEc7bpyTisrFQR9CTtQAuLtl7SBtahHbbE_mCtW5nKvFKqBoCnUhbPavwKI7eR50NP/exec";
 
-  fetch(scriptURL)
-    .then(res => res.json())
-    .then(data => {
-      let total = 0;
-      let tableData = data.map(row => {
-        total += Number(row["Amount"]);
-        return [
-          new Date(row["Timestamp"]).toLocaleString(),
-          row["Employee Name"],
-          row["IVRS "],
-          row["Amount"]
-        ];
-      });
-
+  $(document).ready(function() {
+    $.getJSON(GET_URL, function(data) {
+      // DataTable for all entries
       $('#dataTable').DataTable({
-        data: tableData,
+        data: data,
         columns: [
-          { title: "Timestamp" },
-          { title: "Employee" },
-          { title: "IVRS" },
-          { title: "Amount" }
+          { data: "Timestamp" },
+          { data: "Employee Name" },
+          { data: "IVRS" },
+          { data: "Amount" }
         ],
         dom: 'Bfrtip',
-        buttons: [
-          'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
+        buttons: ['excel', 'pdf', 'print'],
+        responsive: true
       });
 
-      document.getElementById("totalAmount").innerText = total;
-    })
-    .catch(err => console.error("Error loading data:", err));
-</script>
+      // Build user summary
+      let summary = {};
+      data.forEach(row => {
+        let name = row["Employee Name"];
+        if (!summary[name]) {
+          summary[name] = { count: 0, total: 0 };
+        }
+        summary[name].count++;
+        summary[name].total += Number(row["Amount"] || 0);
+      });
 
+      let summaryData = Object.keys(summary).map(name => ({
+        "Employee Name": `<a href="user.html?name=${encodeURIComponent(name)}">${name}</a>`,
+        "Total Entries": summary[name].count,
+        "Total Amount": summary[name].total
+      }));
+
+      $('#summaryTable').DataTable({
+        data: summaryData,
+        columns: [
+          { data: "Employee Name" },
+          { data: "Total Entries" },
+          { data: "Total Amount" }
+        ],
+        dom: 'Bfrtip',
+        buttons: ['excel', 'pdf', 'print'],
+        responsive: true
+      });
+    });
+  });
+</script>
 </body>
 </html>
